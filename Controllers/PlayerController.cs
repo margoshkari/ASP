@@ -9,12 +9,12 @@ namespace WebApplication7.Controllers
     [Route("[controller]")]
     public class PlayerController : ControllerBase
     {
-        private List<Player> players = new List<Player>() { new Player("S1mple", "Александр", "Костылев"),
+        private static List<Player> players = new List<Player>() { new Player("S1mple", "Александр", "Костылев"),
             new Player("Electronic", "Денис", "Шарипов"),
-             new Player("Boombl4", "Денис", "Шарипов"),
-              new Player("Perfecto", "Денис", "Шарипов"),
-               new Player("B1t", "Денис", "Шарипов"),
-                new Player("B1ad3", "Денис", "Шарипов") };
+             new Player("Boombl4", "Кирилл", "Михайлов"),
+              new Player("Perfecto", "Илья", "Залуцкий"),
+               new Player("B1t", "Валерий", "Ваховский"),
+                new Player("B1ad3", "Андрей", "Городенский") };
         private readonly ILogger<WeatherForecastController> _logger;
 
         public PlayerController(ILogger<WeatherForecastController> logger)
@@ -23,35 +23,35 @@ namespace WebApplication7.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<Player> Get()
         {
-            //return players;
+            return players;
         }
-
         [HttpPost]
-        public string Post(string item)
+        public string Post(string nickname, string firstName, string secondName)
         {
-           // players.Add(item);
-            return $"{item} added!";
+            players.Add(new Player(nickname, firstName, secondName));
+            return $"{nickname} added!";
         }
         [HttpDelete]
-        public StatusCodeResult Delete(string item)
+        public StatusCodeResult Delete(string nickname)
         {
-           // if(players.FindIndex(x => x == item) == -1)
-           // {
-           //     return StatusCode(204);
-           // }
-
+            if (players.FindIndex(x => x.Nickname == nickname) == -1)
+            {
+                return StatusCode(204);
+            }
+            players.RemoveAt(players.FindIndex(x => x.Nickname == nickname));
             return StatusCode(200);
         }
         [HttpPatch]
-        public StatusCodeResult Patch(string _old, string _new)
+        public StatusCodeResult Patch(string oldNickname, string newNickname)
         {
-           // if (players.FindIndex(x => x == _old) != -1)
-          //  {
-           //     players[players.FindIndex(x => x == _old)] = _new;
-           // }
+            if (players.FindIndex(x => x.Nickname == oldNickname) == -1)
+            {
+                return StatusCode(204);
+            }
 
+            players[players.FindIndex(x => x.Nickname == oldNickname)].Nickname = newNickname;
             return StatusCode(200);
         }
     }
