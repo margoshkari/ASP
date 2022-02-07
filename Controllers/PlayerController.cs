@@ -9,49 +9,56 @@ namespace WebApplication7.Controllers
     [Route("[controller]")]
     public class PlayerController : ControllerBase
     {
-        private static List<Player> players = new List<Player>() { new Player("S1mple", "Александр", "Костылев"),
-            new Player("Electronic", "Денис", "Шарипов"),
-             new Player("Boombl4", "Кирилл", "Михайлов"),
-              new Player("Perfecto", "Илья", "Залуцкий"),
-               new Player("B1t", "Валерий", "Ваховский"),
-                new Player("B1ad3", "Андрей", "Городенский") };
-        private readonly ILogger<WeatherForecastController> _logger;
+        private static int Id = 0;
+        private static List<Player> players = new List<Player>() { new Player(++Id, "S1mple", "Александр", "Костылев"),
+            new Player(++Id, "Electronic", "Денис", "Шарипов"),
+             new Player(++Id, "Boombl4", "Кирилл", "Михайлов"),
+              new Player(++Id, "Perfecto", "Илья", "Залуцкий"),
+               new Player(++Id, "B1t", "Валерий", "Ваховский"),
+                new Player(++Id, "B1ad3", "Андрей", "Городенский") };
+        private readonly ILogger<PlayerController> _logger;
 
-        public PlayerController(ILogger<WeatherForecastController> logger)
+        public PlayerController(ILogger<PlayerController> logger)
         {
             _logger = logger;
         }
 
         [HttpGet]
-        public IEnumerable<Player> Get()
+        public Player Get(int id)
         {
-            return players;
+            if (id < players.Count && id > 0)
+            {
+                return players[id - 1];
+            }
+            return null;
         }
         [HttpPost]
         public string Post(string nickname, string firstName, string secondName)
         {
-            players.Add(new Player(nickname, firstName, secondName));
+            players.Add(new Player(++Id, nickname, firstName, secondName));
             return $"{nickname} added!";
         }
         [HttpDelete]
-        public StatusCodeResult Delete(string nickname)
+        public StatusCodeResult Delete(int id)
         {
-            if (players.FindIndex(x => x.Nickname == nickname) == -1)
+            int index = players.FindIndex(x => x.Id == id);
+            if (index == -1)
             {
                 return StatusCode(204);
             }
-            players.RemoveAt(players.FindIndex(x => x.Nickname == nickname));
+            players.RemoveAt(index);
             return StatusCode(200);
         }
         [HttpPatch]
-        public StatusCodeResult Patch(string oldNickname, string newNickname)
+        public StatusCodeResult Patch(int oldId, string nickname, string firstName, string secondName)
         {
-            if (players.FindIndex(x => x.Nickname == oldNickname) == -1)
+            int index = players.FindIndex(x => x.Id == oldId);
+            if (index == -1)
             {
                 return StatusCode(204);
             }
 
-            players[players.FindIndex(x => x.Nickname == oldNickname)].Nickname = newNickname;
+            players[index] = new Player(oldId, nickname, firstName, secondName);
             return StatusCode(200);
         }
     }

@@ -9,9 +9,13 @@
         public Player()
         {
             Id = 0;
+            Nickname = string.Empty;
+            FirstName = string.Empty;
+            SecondNme = string.Empty;
         }
-        public Player(string nickname, string firstname, string secondname)
+        public Player(int id, string nickname, string firstname, string secondname)
         {
+            Id = id;
             Nickname = nickname;
             FirstName = firstname;
             SecondNme = secondname;
