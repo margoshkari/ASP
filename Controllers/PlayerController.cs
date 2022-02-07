@@ -26,11 +26,12 @@ namespace WebApplication7.Controllers
         [HttpGet]
         public Player Get(int id)
         {
-            if (id < players.Count && id > 0)
+            int index = players.FindIndex(x => x.Id == id);
+            if (index == -1)
             {
-                return players[id - 1];
+                return null;
             }
-            return null;
+            return players[index];
         }
         [HttpPost]
         public string Post(string nickname, string firstName, string secondName)
