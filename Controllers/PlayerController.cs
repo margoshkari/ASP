@@ -7,15 +7,15 @@ namespace WebApplication7.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class PlayerController : ControllerBase
+    public partial class PlayerController : ControllerBase
     {
         private static int Id = 0;
-        private static List<Player> players = new List<Player>() { new Player(++Id, "S1mple", "Александр", "Костылев"),
-            new Player(++Id, "Electronic", "Денис", "Шарипов"),
-             new Player(++Id, "Boombl4", "Кирилл", "Михайлов"),
-              new Player(++Id, "Perfecto", "Илья", "Залуцкий"),
-               new Player(++Id, "B1t", "Валерий", "Ваховский"),
-                new Player(++Id, "B1ad3", "Андрей", "Городенский") };
+        private static List<Player> players = new List<Player>() { new Player(++Id, "S1mple", "Александр", "Костылев", TeamController.teams[0]),
+                                                                    new Player(++Id, "Electronic", "Денис", "Шарипов", TeamController.teams[0]),
+                                                                     new Player(++Id, "Boombl4", "Кирилл", "Михайлов", TeamController.teams[0]),
+                                                                      new Player(++Id, "Perfecto", "Илья", "Залуцкий", TeamController.teams[0]),
+                                                                       new Player(++Id, "B1t", "Валерий", "Ваховский", TeamController.teams[0]),
+                                                                        new Player(++Id, "B1ad3", "Андрей", "Городенский", TeamController.teams[0]) };
         private readonly ILogger<PlayerController> _logger;
 
         public PlayerController(ILogger<PlayerController> logger)
@@ -23,21 +23,16 @@ namespace WebApplication7.Controllers
             _logger = logger;
         }
 
-        [HttpGet]
-        public Player Get(int id)
-        {
-            int index = players.FindIndex(x => x.Id == id);
-            if (index == -1)
-            {
-                return null;
-            }
-            return players[index];
-        }
         [HttpPost]
-        public string Post(string nickname, string firstName, string secondName)
+        public StatusCodeResult Post(string nickname, string firstName, string secondName, string teamName)
         {
-            players.Add(new Player(++Id, nickname, firstName, secondName));
-            return $"{nickname} added!";
+            int index = TeamController.teams.FindIndex(x => x.Name == teamName);
+            if (index == -1 || nickname == null || firstName == null || secondName == null)
+            {
+                return StatusCode(204);
+            }
+            players.Add(new Player(++Id, nickname, firstName, secondName, TeamController.teams[index]));
+            return StatusCode(200);
         }
         [HttpDelete]
         public StatusCodeResult Delete(int id)
@@ -51,15 +46,16 @@ namespace WebApplication7.Controllers
             return StatusCode(200);
         }
         [HttpPatch]
-        public StatusCodeResult Patch(int oldId, string nickname, string firstName, string secondName)
+        public StatusCodeResult Patch(int oldId, string nickname, string firstName, string secondName, string teamName)
         {
             int index = players.FindIndex(x => x.Id == oldId);
-            if (index == -1)
+            int teamIndex = TeamController.teams.FindIndex(x => x.Name == teamName);
+            if (index == -1 || teamIndex == -1 || nickname == null || firstName == null || secondName == null)
             {
                 return StatusCode(204);
             }
 
-            players[index] = new Player(oldId, nickname, firstName, secondName);
+            players[index] = new Player(oldId, nickname, firstName, secondName, TeamController.teams[teamIndex]);
             return StatusCode(200);
         }
     }
