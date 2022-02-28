@@ -5,10 +5,14 @@ namespace WebApplication7.Controllers
 {
     public partial class PlayerController
     {
+        SqlOperation sqlOperation = new SqlOperation();
         [HttpGet]
-        public IEnumerable<Player> Get()
+        public IEnumerable<Player> Get(string token)
         {
-            return players;
+            if (sqlOperation.CompareTokens(token))
+                return players;
+
+            return null;
         }
     }
 }

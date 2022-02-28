@@ -5,10 +5,14 @@ namespace WebApplication7.Controllers
 {
     public partial class TeamController
     {
+        SqlOperation sqlOperation = new SqlOperation();
         [HttpGet]
-        public IEnumerable<Team> Get()
+        public IEnumerable<Team> Get(string token)
         {
-            return teams;
+            if(sqlOperation.CompareTokens(token))
+                return teams;
+
+            return null;
         }
     }
 }

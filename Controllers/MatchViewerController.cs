@@ -5,10 +5,14 @@ namespace WebApplication7.Controllers
 {
     public partial class MatchController
     {
+        SqlOperation sqlOperation = new SqlOperation();
         [HttpGet]
-        public IEnumerable<Match> Get()
+        public IEnumerable<Match> Get(string token)
         {
-            return matches;
+            if (sqlOperation.CompareTokens(token))
+                return matches;
+
+            return null;
         }
     }
 }
